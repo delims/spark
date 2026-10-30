@@ -1,0 +1,25 @@
+# Runtime artifacts (never committed)
+*.db
+*.db-wal
+*.db-shm
+write_queue
+writer.pid
+writer.lock
+writer.log
+notify/
+cursors/
+presence/
+
+# Secrets / keys
+*.key
+spark.key
+.env
+
+# Build output
+/spark-mcp
+/bin/
+/dist/
+
+# Editor / OS noise
+.DS_Store
+*.swp
