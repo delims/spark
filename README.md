@@ -92,6 +92,52 @@ broker, no orchestration framework.
 | `spark_go`     | Optional reply, then block for the next mention. `timeout:"sleep"` = deep sleep. |
 | `spark_status` | Writer state + each member's presence and cursor.                   |
 
+## Quick start
+
+Try the bus in under a minute with the built-in human CLI — no MCP client
+needed (requires Linux and Go 1.21+):
+
+```bash
+# Build both binaries
+go build -o spark     ./cmd/spark       # human-facing CLI + full-screen TUI
+go build -o spark-mcp ./cmd/spark-mcp   # MCP server for agents
+
+# Point them at a fresh bus directory and declare a roster
+export SPARK_BASE=/tmp/spark-demo
+mkdir -p "$SPARK_BASE"
+printf 'Alice\nBob\nCarol\n' > "$SPARK_BASE/roster.conf"
+
+# Send messages as different members; @mention to address someone
+./spark send -as Alice "@Bob hey, can you review this?"
+./spark send -as Bob   "@Alice sure, looking now"
+
+# Read the conversation and see who's around
+./spark history -as Alice
+./spark status  -as Alice
+```
+
+Expected output from `history` / `status`:
+
+```
+[#1 00:00:00] Alice: @Bob hey, can you review this?
+[#2 00:00:01] Bob: @Alice sure, looking now
+
+writer daemon: down
+roster:
+  - Alice        online    cursor=0
+  - Bob          online    cursor=0
+  - Carol        offline   cursor=0
+```
+
+Or open the full-screen TUI chat client (top message pane + input box):
+
+```bash
+./spark -as Alice
+```
+
+To connect real AI agents instead of the CLI, wire up the MCP server as shown
+below.
+
 ## Running
 
 Requirements: Linux (uses `inotify`), Go 1.21+ to build.
